@@ -5,6 +5,7 @@ const path = require("path");
 
 const COMPLETED_MESSAGE = "Please enter any key to continue...";
 let outputChannel;
+let timer;
 function getOutputChannel() {
   if (!outputChannel) {
     outputChannel = vscode.window.createOutputChannel("k8s-dev-environments");
@@ -574,11 +575,16 @@ function activate(context) {
   });
   context.subscriptions.push(selDisp, visDisp);
   oc.appendLine(`[activate] ${context.subscriptions.length} subscriptions`);
+  timer = setInterval(() => {
+    provider.refresh();
+  }, 8000);
 }
 
 function deactivate() {
   provider = null;
   outputChannel = null;
+  clearInterval(timer);
+  timer = null;
 }
 
 module.exports = { activate, deactivate };
